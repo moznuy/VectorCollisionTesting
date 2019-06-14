@@ -2,17 +2,49 @@ document.addEventListener("DOMContentLoaded", function (event) {
     const container = document.querySelector('.container');
     const rect = container.getBoundingClientRect();
 
-    container.addEventListener("mousedown", (e) => {
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
 
-        if (e.shiftKey) {
+    let pressed = false;
+    let mode = false;
+    const moveLogic = function (x, y) {
+        if (mode === true) {
             Ray = new Vec(x - Point.x, y - Point.y);
         }
         else {
             Point = new Vec(x, y);
         }
+    }
+
+    container.addEventListener("mousedown", (e) => {
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        pressed = true;
+        if (e.shiftKey)
+            mode = true;
+        else
+            mode = false;
+
+        moveLogic(x, y);
     });
+
+    container.addEventListener("mouseup", (e) => {
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        pressed = false;
+
+        moveLogic(x, y);
+    });
+
+    container.addEventListener("mousemove", (e) => {
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        if (pressed)
+            moveLogic(x, y);
+    });
+
+
 
     const canva = document.querySelector("#canva");
     /** @type {CanvasRenderingContext2D} */
